@@ -53,10 +53,12 @@ $PRISM->start();
  * @author GeForz (Kai Lochbaum)
  * @author T3charmy (Macgyver Hoferkamp)
  * @author zenware (Jay Looney)
+ * @author FlameCZE
+ * @author Povo
 */
 class PHPInSimMod
 {
-    const VERSION = '0.4.6.4';
+    const VERSION = '0.5.0.4';
     const ROOTPATH = ROOTPATH;
 
     /* Run Time Arrays */
@@ -308,8 +310,9 @@ class PHPInSimMod
     {
         $sleep = 1;
         $uSleep = null;
-
+        $timeout = null;
         $sleepTime = null;
+
         foreach ($this->plugins->getPlugins() as $plugin => $object) {
             $timeout = $object->executeTimers();
 

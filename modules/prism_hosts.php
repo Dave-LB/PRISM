@@ -588,6 +588,11 @@ class HostHandler extends SectionHandler
 
         $host = $this->hosts[$hostId];
 
+        if($host == null){
+            trigger_error('Attempted to check on invalid host.', E_USER_WARNING);
+            return FALSE;
+        }
+
         if ($host->isRelay())
         {
             if (!$host->isAdmin() &&
@@ -614,6 +619,11 @@ class HostHandler extends SectionHandler
             )
             {
                 trigger_error('Attempted to send invalid packet to relay host, packet request makes no sense in this context.', E_USER_WARNING);
+                return FALSE;
+            }
+        }else{
+            if (($host->getFlags() & ISF_LOCAL) && $packetClass instanceof IS_MTC){
+                trigger_error('Attempted to send invalid packet to single player host.', E_USER_WARNING);
                 return FALSE;
             }
         }
@@ -1213,6 +1223,9 @@ class InsimConnection
     public function read(&$peerInfo)
     {
         $this->lastReadTime = time();
+        if ($this->socketType == SOCKTYPE_TCP)
+            return fread($this->socket, STREAM_READ_BYTES); #stream_socket_recvfrom was crashing with TCP packets
+
         return stream_socket_recvfrom($this->socket, STREAM_READ_BYTES, 0, $peerInfo);
     }
 
